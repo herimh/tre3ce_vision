@@ -18,25 +18,19 @@ public class NameMapper {
     }
 
     public void addName(String name){
-        if (names.size() == 0){
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.setText(name);
-            objectMapper.increment();
+        for (int i=0; i<names.size(); i++){
+            if (names.get(i).getText().equals(name)){
+                names.get(i).increment();
 
-            names.add(objectMapper);
-        }else{
-            for (int i=0; i<names.size(); i++){
-                if (names.get(i).getText().equals(name)){
-                    names.get(i).increment();
-                }else{
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    objectMapper.setText(name);
-                    objectMapper.increment();
-
-                    names.add(objectMapper);
-                }
+                return;
             }
         }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setText(name);
+        objectMapper.increment();
+
+        names.add(objectMapper);
 
     }
 

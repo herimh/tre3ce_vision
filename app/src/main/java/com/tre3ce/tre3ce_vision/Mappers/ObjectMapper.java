@@ -22,10 +22,10 @@ public class ObjectMapper {
     }
 
     public void increment(){
-        this.count ++;
+        this.count = this.count + 1;
     }
 
     public int count(){
-        return count;
+        return this.count;
     }
 }

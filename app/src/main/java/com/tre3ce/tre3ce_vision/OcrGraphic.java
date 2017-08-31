@@ -110,7 +110,7 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
             rect2.right = 400;
             rect2.bottom = 330;
             canvas.drawRect(rect2, sRectPaint);
-            canvas.drawText(credential[2], 10, 310, sTextPaint);
+            canvas.drawText(credential[3], 10, 310, sTextPaint);
         }
 
         if (credential[4] != null && credential[4] != ""){ //Section
@@ -120,7 +120,7 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
             rect3.right = 250;
             rect3.bottom = 460;
             canvas.drawRect(rect3, sRectPaint);
-            canvas.drawText(credential[2], 10, 440, sTextPaint);
+            canvas.drawText(credential[4], 10, 440, sTextPaint);
         }
     }
 }

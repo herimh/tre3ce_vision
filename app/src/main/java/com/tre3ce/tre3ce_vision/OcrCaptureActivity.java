@@ -41,7 +41,9 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.tre3ce.tre3ce_vision.Mappers.ElectorKeyMapper;
 import com.tre3ce.tre3ce_vision.Mappers.NameMapper;
+import com.tre3ce.tre3ce_vision.Mappers.SectionMapper;
 import com.tre3ce.tre3ce_vision.listeners.OnOcrDetectListener;
 import com.tre3ce.tre3ce_vision.ui.camera.CameraSource;
 import com.tre3ce.tre3ce_vision.ui.camera.CameraSourcePreview;
@@ -86,6 +88,8 @@ public final class OcrCaptureActivity extends AppCompatActivity implements OnOcr
     public String credential[] = new String[5];
 
     NameMapper nameMapper = new NameMapper();
+    ElectorKeyMapper electorKeyMapper = new ElectorKeyMapper();
+    SectionMapper sectionMapper = new SectionMapper();
 
     /*public String names[];
     public String keys[];
@@ -402,14 +406,18 @@ public final class OcrCaptureActivity extends AppCompatActivity implements OnOcr
     }
 
     private void processText(TextBlock mText){
-        String array[] = mText.getValue().split("\\n");
+        String textValue = mText.getValue().toUpperCase().replaceAll("[^A-Z0-9Ñ'ÁÉÍÓÚÛ\\n ]", "")
+                .replace("ELECTORAL", "").replace("ELECTORES", "");
+        Log.d("Final TExt", textValue);
+
+        String array[] = textValue.split("\\n");
 
         for (int i=0; i<array.length; i++){
-            if (array[i].contains("NOMBRE")){
+            if (array[i].contains("NOMBRE") || array[i].contains("OMBRE")){
                 this.processName(array[i+3].trim(), array[i+1].trim(), array[i+2].trim());
             }
 
-            if (array[i].contains("CLAVE DE ELECTOR")){
+            if (array[i].contains("CLAVE DE ELECTOR") || array[i].contains("CLAVE") || array[i].contains("ELECTOR")){
                 String electorArray[] = array[i].split(" ");
                 for (int x=0; x < electorArray.length; x++){
                     if (electorArray[x].length() > 8){
@@ -418,11 +426,11 @@ public final class OcrCaptureActivity extends AppCompatActivity implements OnOcr
                 }
             }
 
-            if (array[i].contains("SECCION") || array[i].contains("SECCIÓN")){
+            if (array[i].contains("SECCION") || array[i].contains("SECCIÓN") || array[i].contains("SECC")){
                 String sectionArray[] = array[i].split(" ");
 
                 for (int x=0; x < sectionArray.length; x++){
-                    if (sectionArray[x].contains("SECCION") || sectionArray[x].contains("SECCIÓN")){
+                    if (sectionArray[x].contains("SECCION") || sectionArray[x].contains("SECCIÓN") || sectionArray[i].contains("SECC")){
                         if (sectionArray.length > (x+1)){
                             this.processSection(sectionArray[x+1].trim());
                         }
@@ -446,15 +454,26 @@ public final class OcrCaptureActivity extends AppCompatActivity implements OnOcr
             OcrGraphic graphic = new OcrGraphic(mGraphicOverlay, credential);
             mGraphicOverlay.add(graphic);
         }
-
-
     }
 
     private void processKey(String electorKey){
         Log.d("ELECTOR KEY: ", electorKey);
+
+        this.electorKeyMapper.add(electorKey);
+
+        String finalElectorKey = this.electorKeyMapper.getBestOption();
+        Log.d("EKEY-FINAL", finalElectorKey);
+        this.credential[3] = finalElectorKey;
+
+        mGraphicOverlay.clear();
+        OcrGraphic graphic = new OcrGraphic(mGraphicOverlay, credential);
+        mGraphicOverlay.add(graphic);
     }
 
     private void processSection(String section){
         Log.d("SECTION: ", section);
+
+        this.sectionMapper.add(section);
+        this.credential[4] = this.sectionMapper.getBestOption();
     }
 }

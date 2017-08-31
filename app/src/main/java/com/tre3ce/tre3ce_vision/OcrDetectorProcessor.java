@@ -51,7 +51,7 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
         for (int i = 0; i < items.size(); ++i) {
             TextBlock item = items.valueAt(i);
             if (item != null && item.getValue() != null) {
-                Log.d("Processor", "Text detected! " + item.getValue());
+                Log.d("Proc/essor", "Text detected! " + item.getValue());
                 this.detectListener.onOcrDetectorResult(item);
             }
 
